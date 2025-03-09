@@ -37,10 +37,22 @@ import {
     parseAndFormatDataSize,
     truncateString,
 } from '../utils/utils.ts'
+import { styled } from '@mui/material/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
 interface IQueryListItemProps {
     queryInfo: QueryInfo
 }
+
+const StyledLink = styled(RouterLink)(({ theme }) => ({
+    textDecoration: 'none',
+    color: theme.palette.info.main,
+    '&:hover': {
+        textDecoration: 'underline',
+    },
+    fontSize: 14,
+    fontWeight: 500,
+}))
 
 export const QueryListItem = (props: IQueryListItemProps) => {
     const { queryInfo } = props
@@ -180,7 +192,7 @@ export const QueryListItem = (props: IQueryListItemProps) => {
                 >
                     <Box>
                         <Tooltip placement="top-start" title="Query ID">
-                            <Typography variant="subtitle2">{queryInfo.queryId}</Typography>
+                            <StyledLink to={`/queries/${queryInfo.queryId}`}>{queryInfo.queryId}</StyledLink>
                         </Tooltip>
                     </Box>
                     <Box>

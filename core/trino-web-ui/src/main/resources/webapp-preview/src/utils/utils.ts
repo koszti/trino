@@ -255,3 +255,18 @@ export function formatShortTime(date: Date): string {
     const minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
     return hours + ':' + minutes + (date.getHours() >= 12 ? 'pm' : 'am')
 }
+
+export function formatShortDateTime(date: Date): string {
+    const year = date.getFullYear()
+    const month = '' + (date.getMonth() + 1)
+    const dayOfMonth = '' + date.getDate()
+    return (
+        year +
+        '-' +
+        (month[1] ? month : '0' + month[0]) +
+        '-' +
+        (dayOfMonth[1] ? dayOfMonth : '0' + dayOfMonth[0]) +
+        ' ' +
+        formatShortTime(date)
+    )
+}

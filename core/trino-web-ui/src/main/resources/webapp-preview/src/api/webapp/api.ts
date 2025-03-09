@@ -94,17 +94,37 @@ export interface QueryStats {
     finishingTime: string
     fullyBlocked: boolean
     internalNetworkInputDataSize: string
+    failedInternalNetworkInputDataSize: string
     peakTotalMemoryReservation: string
     peakUserMemoryReservation: string
+    peakRevocableMemoryReservation: string
+    physicalInputPositions: number
+    failedPhysicalInputPositions: number
     physicalInputDataSize: string
+    failedPhysicalInputDataSize: string
     physicalInputReadTime: string
+    failedPhysicalInputReadTime: string
     physicalWrittenDataSize: string
+    failedPhysicalWrittenDataSize: string
+    internalNetworkInputPositions: number
+    failedInternalNetworkInputPositions: number
     planningTime: string
+    planningCpuTime: string
     progressPercentage: number
     queuedDrivers: number
     queuedTime: string
     rawInputDataSize: string
     rawInputPositions: number
+    processedInputPositions: number
+    failedProcessedInputPositions: number
+    processedInputDataSize: string
+    failedProcessedInputDataSize: string
+    outputPositions: number
+    failedOutputPositions: number
+    outputDataSize: string
+    failedOutputDataSize: string
+    writtenPositions: number
+    logicalWrittenDataSize: string
     runningDrivers: number
     runningPercentage: number
     spilledDataSize: string
@@ -138,6 +158,46 @@ export interface QueryInfo {
     }
 }
 
+export interface Session {
+    queryId: string
+    transactionId: string
+    clientTransactionSupport: boolean
+    user: string
+    originalUser: string
+    groups: string[]
+    originalUserGroups: string[]
+    principal: string
+    enabledRoles: string[]
+    source: string
+    catalog: string
+    schema: string
+    timeZoneKey: number
+    locale: string
+    remoteUserAddress: string
+    userAgent: string
+    clientTags: string[]
+    clientCapabilities: string[]
+    start: string
+    protocolName: string
+    timeZone: string
+    queryDataEncoding: string
+    systemProperties: { [key: string]: string | number | boolean }
+    catalogProperties: { [key: string]: string | number | boolean }
+}
+
+export interface QueryStatusInfo {
+    queryId: string
+    session: Session
+    state: string
+    query: string
+    queryStats: QueryStats
+    queryType: string
+    resourceGroupId: string[]
+    retryPolicy: string
+    pruned: boolean
+    finalQueryInfo: boolean
+}
+
 export async function statsApi(): Promise<ApiResponse<Stats>> {
     return await api.get<Stats>('/ui/api/stats')
 }
@@ -152,4 +212,8 @@ export async function workerStatusApi(nodeId: string): Promise<ApiResponse<Worke
 
 export async function queryApi(): Promise<ApiResponse<QueryInfo[]>> {
     return await api.get<QueryInfo[]>('/ui/api/query')
+}
+
+export async function queryStatusApi(queryId: string): Promise<ApiResponse<QueryStatusInfo>> {
+    return await api.get<QueryStatusInfo>(`/ui/api/query/${queryId}`)
 }
