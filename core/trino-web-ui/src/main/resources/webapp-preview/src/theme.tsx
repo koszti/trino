@@ -1,5 +1,9 @@
 import { createTheme } from '@mui/material/styles'
 
+const sharedTypography = {
+    fontSize: 16,
+}
+
 export const lightTheme = createTheme({
     palette: {
         mode: 'light',
@@ -10,6 +14,7 @@ export const lightTheme = createTheme({
             main: '#f50057',
         },
     },
+    typography: sharedTypography,
     components: {
         MuiLink: {
             styleOverrides: {
@@ -26,6 +31,7 @@ export const darkTheme = createTheme({
     palette: {
         mode: 'dark',
     },
+    typography: sharedTypography,
     components: {
         MuiLink: {
             styleOverrides: {
