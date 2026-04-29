@@ -28,20 +28,17 @@ public class TestWebUiConfig
     public void testDefaults()
     {
         assertRecordedDefaults(recordDefaults(WebUiConfig.class)
-                .setEnabled(true)
-                .setPreviewEnabled(true));
+                .setEnabled(true));
     }
 
     @Test
     public void testExplicitPropertyMappings()
     {
         Map<String, String> properties = ImmutableMap.of(
-                "web-ui.enabled", "false",
-                "web-ui.preview.enabled", "false");
+                "web-ui.enabled", "false");
 
         WebUiConfig expected = new WebUiConfig()
-                .setEnabled(false)
-                .setPreviewEnabled(false);
+                .setEnabled(false);
 
         assertFullMapping(properties, expected);
     }

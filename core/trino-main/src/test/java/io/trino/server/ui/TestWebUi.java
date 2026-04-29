@@ -104,10 +104,10 @@ import static io.trino.server.security.ResourceSecurity.AccessType.WEB_UI;
 import static io.trino.server.security.jwt.JwtUtil.newJwtBuilder;
 import static io.trino.server.security.oauth2.OAuth2CallbackResource.CALLBACK_ENDPOINT;
 import static io.trino.server.security.oauth2.OAuth2Service.NONCE;
-import static io.trino.server.ui.FormWebUiAuthenticationFilter.DISABLED_LOCATION;
-import static io.trino.server.ui.FormWebUiAuthenticationFilter.LOGIN_FORM;
-import static io.trino.server.ui.FormWebUiAuthenticationFilter.UI_LOGIN;
-import static io.trino.server.ui.FormWebUiAuthenticationFilter.UI_LOGOUT;
+import static io.trino.server.ui.FormWebUiAuthenticationFilter.CLASSIC_LOGIN_FORM;
+import static io.trino.server.ui.FormWebUiAuthenticationFilter.CLASSIC_UI_LOGIN;
+import static io.trino.server.ui.FormWebUiAuthenticationFilter.CLASSIC_UI_LOGOUT;
+import static io.trino.server.ui.FormWebUiAuthenticationFilter.UI_DISABLED;
 import static io.trino.server.ui.OAuthIdTokenCookie.ID_TOKEN_COOKIE;
 import static io.trino.server.ui.OAuthWebUiCookie.OAUTH2_COOKIE;
 import static io.trino.testing.assertions.Assert.assertEventually;
@@ -285,15 +285,15 @@ public class TestWebUi
     private void testLoggedOut(URI baseUri)
             throws IOException
     {
-        assertRedirect(client, getUiLocation(baseUri), getLoginHtmlLocation(baseUri));
+        assertOk(client, getUiLocation(baseUri));
 
-        assertRedirect(client, getLocation(baseUri, "/ui/query.html", "abc123"), getLocation(baseUri, LOGIN_FORM, "/ui/query.html?abc123"), false);
+        assertRedirect(client, getLocation(baseUri, "/ui/query.html", "abc123"), getLocation(baseUri, CLASSIC_LOGIN_FORM, "/ui/query.html?abc123"), false);
 
         assertResponseCode(client, getValidApiLocation(baseUri), SC_UNAUTHORIZED);
 
-        assertOk(client, getValidAssetsLocation(baseUri));
+        assertOk(client, getValidClassicAssetsLocation(baseUri));
 
-        assertOk(client, getValidVendorLocation(baseUri));
+        assertOk(client, getValidClassicVendorLocation(baseUri));
     }
 
     private void testLogIn(URI baseUri, String username, String password, boolean sendPassword)
@@ -486,9 +486,11 @@ public class TestWebUi
 
         assertRedirect(client, getLogoutLocation(baseUri), getDisabledLocation(baseUri));
 
-        assertOk(client, getValidAssetsLocation(baseUri));
+        assertOk(client, getValidClassicAssetsLocation(baseUri));
 
-        assertOk(client, getValidVendorLocation(baseUri));
+        assertOk(client, getValidClassicVendorLocation(baseUri));
+
+        assertOk(client, getDisabledLocation(baseUri));
     }
 
     @Test
@@ -1032,7 +1034,7 @@ public class TestWebUi
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        if (url.endsWith(UI_LOGIN)) {
+        if (url.endsWith(CLASSIC_UI_LOGIN)) {
             RequestBody formBody = new FormBody.Builder()
                     .add("username", "test")
                     .add("password", "test")
@@ -1197,22 +1199,22 @@ public class TestWebUi
 
     private static String getLoginHtmlLocation(URI baseUri)
     {
-        return getLocation(baseUri, LOGIN_FORM);
+        return getLocation(baseUri, CLASSIC_LOGIN_FORM);
     }
 
     private static String getLoginLocation(URI httpsUrl)
     {
-        return getLocation(httpsUrl, UI_LOGIN);
+        return getLocation(httpsUrl, CLASSIC_UI_LOGIN);
     }
 
     private static String getLogoutLocation(URI baseUri)
     {
-        return getLocation(baseUri, UI_LOGOUT);
+        return getLocation(baseUri, CLASSIC_UI_LOGOUT);
     }
 
     private static String getDisabledLocation(URI baseUri)
     {
-        return getLocation(baseUri, DISABLED_LOCATION);
+        return getLocation(baseUri, UI_DISABLED);
     }
 
     private static String getValidApiLocation(URI baseUri)
@@ -1220,14 +1222,14 @@ public class TestWebUi
         return getLocation(baseUri, "/ui/api/cluster");
     }
 
-    private static String getValidAssetsLocation(URI baseUri)
+    private static String getValidClassicAssetsLocation(URI baseUri)
     {
-        return getLocation(baseUri, "/ui/assets/favicon.ico");
+        return getLocation(baseUri, "/ui/classic/assets/favicon.ico");
     }
 
-    private static String getValidVendorLocation(URI baseUri)
+    private static String getValidClassicVendorLocation(URI baseUri)
     {
-        return getLocation(baseUri, "/ui/vendor/bootstrap/css/bootstrap.css");
+        return getLocation(baseUri, "/ui/classic/vendor/bootstrap/css/bootstrap.css");
     }
 
     private static String getLocation(URI baseUri, String path)

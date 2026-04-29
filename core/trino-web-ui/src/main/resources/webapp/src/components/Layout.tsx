@@ -179,7 +179,7 @@ export const RootLayout = (props: { children: React.ReactNode }) => {
 
     const onClassicUi = () => {
         closeUserMenu()
-        window.location.assign('/ui')
+        window.location.assign('/ui/classic')
     }
 
     const onLogout = () => {

@@ -17,6 +17,8 @@ import io.trino.server.ExternalUriInfo;
 import io.trino.server.security.ResourceSecurity;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
@@ -24,35 +26,60 @@ import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 
 import static io.trino.server.security.ResourceSecurity.AccessType.PUBLIC;
+import static io.trino.server.security.ResourceSecurity.AccessType.WEB_UI;
 import static io.trino.web.ui.WebUiResources.webUiResource;
 
 @Path("")
-@ResourceSecurity(PUBLIC) // asset files are always visible
-public class WebUiPreviewStaticResource
+@ResourceSecurity(PUBLIC)
+public class WebUiClassicStaticResource
 {
     @GET
-    @Path("/ui/preview")
-    public Response getUiPreview(@BeanParam ExternalUriInfo externalUriInfo)
+    @Path("/ui/classic")
+    public Response getUi(@BeanParam ExternalUriInfo externalUriInfo)
     {
-        return Response.seeOther(externalUriInfo.absolutePath("/ui/preview/")).build();
+        return Response.seeOther(externalUriInfo.absolutePath("/ui/classic/")).build();
     }
 
+    @ResourceSecurity(WEB_UI)
+    @POST
+    @Path("/ui/classic/{path: .*}")
+    public Response postFile()
+    {
+        // The "getFile" resource method matches all GET requests, and without a
+        // resource for POST requests, a METHOD_NOT_ALLOWED error will be returned
+        // instead of a NOT_FOUND error
+        throw new NotFoundException();
+    }
+
+    // asset files are always visible
+    @ResourceSecurity(PUBLIC)
     @GET
-    @Path("/ui/preview/assets/{path: .*}")
+    @Path("/ui/classic/assets/{path: .*}")
     public Response getAssetsFile(@PathParam("path") String path)
             throws IOException
     {
         return getFile("assets/" + path);
     }
 
+    // vendor files are always visible
+    @ResourceSecurity(PUBLIC)
     @GET
-    @Path("/ui/preview/{path: .*}")
+    @Path("/ui/classic/vendor/{path: .*}")
+    public Response getVendorFile(@PathParam("path") String path)
+            throws IOException
+    {
+        return getFile("vendor/" + path);
+    }
+
+    @ResourceSecurity(WEB_UI)
+    @GET
+    @Path("/ui/classic/{path: .*}")
     public Response getFile(@PathParam("path") String path)
             throws IOException
     {
         if (path.isEmpty()) {
             path = "index.html";
         }
-        return webUiResource("/webapp-preview/dist/" + path);
+        return webUiResource("/webapp-classic/" + path);
     }
 }

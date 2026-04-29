@@ -67,11 +67,11 @@
                 <directory>src/main/resources</directory>
                 <excludes>
                     <exclude>**/node_modules/**</exclude>
+                    <exclude>**/webapp-classic/src/**</exclude>
+                    <exclude>**/webapp-classic/dist/node/**</exclude>
+                    <exclude>**/webapp/public/**</exclude>
                     <exclude>**/webapp/src/**</exclude>
-                    <exclude>**/webapp/dist/node/**</exclude>
-                    <exclude>**/webapp-preview/public/**</exclude>
-                    <exclude>**/webapp-preview/src/**</exclude>
-                    <exclude>**/webapp-preview/*</exclude>
+                    <exclude>**/webapp/*</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -90,7 +90,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <workingDirectory>src/main/resources/webapp/src</workingDirectory>
+                            <workingDirectory>src/main/resources/webapp-classic/src</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -101,7 +101,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <arguments>run ${frontend.package.goal}</arguments>
-                            <workingDirectory>src/main/resources/webapp/src</workingDirectory>
+                            <workingDirectory>src/main/resources/webapp-classic/src</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -112,7 +112,7 @@
                         <phase>verify</phase>
                         <configuration>
                             <arguments>run ${frontend.check.goal}</arguments>
-                            <workingDirectory>src/main/resources/webapp/src</workingDirectory>
+                            <workingDirectory>src/main/resources/webapp-classic/src</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -123,7 +123,7 @@
                         <phase>verify</phase>
                         <configuration>
                             <arguments>run ${frontend.check.goal}</arguments>
-                            <workingDirectory>src/main/resources/webapp-preview</workingDirectory>
+                            <workingDirectory>src/main/resources/webapp</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -134,7 +134,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <arguments>run ${frontend.package.goal}</arguments>
-                            <workingDirectory>src/main/resources/webapp-preview</workingDirectory>
+                            <workingDirectory>src/main/resources/webapp</workingDirectory>
                         </configuration>
                     </execution>
                 </executions>
